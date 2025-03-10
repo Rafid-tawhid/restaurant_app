@@ -41,6 +41,7 @@ dependencies:
   firebase_messaging: ^15.2.4
   firebase_storage: ^12.4.4
   lucide_icons_flutter: ^1.2.9
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

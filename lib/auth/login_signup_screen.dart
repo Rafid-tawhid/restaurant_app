@@ -30,16 +30,15 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        if (FirebaseAuth.instance.currentUser != null) {
-          if(await HelperClass.isAdmin()){
+        if(await HelperClass.isAdmin()){
 
-          }
-          else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
-          }
+        }
+        else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        }
 
 
       } else {
