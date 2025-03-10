@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>265305195498-jj4adeieenncb2ns4lomj97k95nc5dhi.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.265305195498-jj4adeieenncb2ns4lomj97k95nc5dhi</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>265305195498-i3uuj3uuhdg73tp31rqutv4sbfgnr3sj.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAr-S5-NxXZnFKf8SAVOCYtN8OKG_iXMhU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>265305195498</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.flutter.menu</string>
+	<key>PROJECT_ID</key>
+	<string>tourmate-e22dd</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tourmate-e22dd.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:265305195498:ios:ab5e3574c85ae367ad6893</string>
+	<key>DATABASE_URL</key>
+	<string>https://tourmate-e22dd.firebaseio.com</string>
+</dict>
+</plist>
