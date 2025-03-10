@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -42,51 +44,51 @@ class _AddCategoryItemScreenState extends State<AddCategoryItemScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Category Added!")),
+        const SnackBar(content: Text("Category Added!")),
       );
     } catch (e) {
       print("Error saving category: $e");
     }
   }
 
-  // Function to save Item to Firestore under a Category
-  Future<void> _saveItem() async {
-    if (categoryId == null ||
-        itemNameController.text.isEmpty ||
-        itemPriceController.text.isEmpty) return;
-
-    try {
-      String? imageUrl;
-      if (imageFile != null) {
-        // Upload image to Firebase Storage
-        Reference storageRef = FirebaseStorage.instance
-            .ref()
-            .child('item_images/${imageFile!.name}');
-        await storageRef.putFile(imageFile!.path);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-
-      // Add item under the category
-      await _firestore.collection('categories').doc(categoryId).collection('items').add({
-        'name': itemNameController.text,
-        'description': itemDescController.text,
-        'price': double.parse(itemPriceController.text),
-        'imageUrl': imageUrl ?? '',
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Item Added!")),
-      );
-      itemNameController.clear();
-      itemDescController.clear();
-      itemPriceController.clear();
-      setState(() {
-        imageFile = null;
-      });
-    } catch (e) {
-      print("Error saving item: $e");
-    }
-  }
+  // // Function to save Item to Firestore under a Category
+  // Future<void> _saveItem() async {
+  //   if (categoryId == null ||
+  //       itemNameController.text.isEmpty ||
+  //       itemPriceController.text.isEmpty) return;
+  //
+  //   try {
+  //     String? imageUrl;
+  //     if (imageFile != null) {
+  //       // Upload image to Firebase Storage
+  //       Reference storageRef = FirebaseStorage.instance
+  //           .ref()
+  //           .child('item_images/${imageFile!.name}');
+  //       await storageRef.putFile(imageFile!.path);
+  //       imageUrl = await storageRef.getDownloadURL();
+  //     }
+  //
+  //     // Add item under the category
+  //     await _firestore.collection('categories').doc(categoryId).collection('items').add({
+  //       'name': itemNameController.text,
+  //       'description': itemDescController.text,
+  //       'price': double.parse(itemPriceController.text),
+  //       'imageUrl': imageUrl ?? '',
+  //     });
+  //
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("Item Added!")),
+  //     );
+  //     itemNameController.clear();
+  //     itemDescController.clear();
+  //     itemPriceController.clear();
+  //     setState(() {
+  //       imageFile = null;
+  //     });
+  //   } catch (e) {
+  //     print("Error saving item: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,25 +100,25 @@ class _AddCategoryItemScreenState extends State<AddCategoryItemScreen> {
           children: [
             TextField(
               controller: categoryController,
-              decoration: InputDecoration(labelText: "Category Name"),
+              decoration: const InputDecoration(labelText: "Category Name"),
             ),
             ElevatedButton(
               onPressed: _saveCategory,
-              child: Text("Add Category"),
+              child: const Text("Add Category"),
             ),
             if (categoryId != null) ...[
               TextField(
                 controller: itemNameController,
-                decoration: InputDecoration(labelText: "Item Name"),
+                decoration: const InputDecoration(labelText: "Item Name"),
               ),
               TextField(
                 controller: itemDescController,
-                decoration: InputDecoration(labelText: "Item Description"),
+                decoration: const InputDecoration(labelText: "Item Description"),
               ),
               TextField(
                 controller: itemPriceController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: "Item Price"),
+                decoration: const InputDecoration(labelText: "Item Price"),
               ),
               ElevatedButton(
                 onPressed: _pickImage,
@@ -126,7 +128,7 @@ class _AddCategoryItemScreenState extends State<AddCategoryItemScreen> {
                 Image.file(File(imageFile!.path)),
               ],
               ElevatedButton(
-                onPressed: _saveItem,
+                onPressed: (){},
                 child: Text("Add Item to Category"),
               ),
             ],

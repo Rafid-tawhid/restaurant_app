@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:menu/screen/category_screen.dart';
 
 import 'auth/login_signup_screen.dart';
 import 'helpers_class/helper_function.dart';
@@ -21,7 +22,11 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
     if (FirebaseAuth.instance.currentUser != null) {
       if(await HelperClass.isAdmin()){
-
+        //
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AddCategoryItemScreen()),
+        );
       }
       else {
         Navigator.pushReplacement(

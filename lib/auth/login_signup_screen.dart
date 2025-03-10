@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../helpers_class/helper_function.dart';
 import '../home/home_screen.dart';
+import '../screen/category_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -31,7 +32,10 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordController.text.trim(),
         );
         if(await HelperClass.isAdmin()){
-
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AddCategoryItemScreen()),
+          );
         }
         else {
           Navigator.pushReplacement(
