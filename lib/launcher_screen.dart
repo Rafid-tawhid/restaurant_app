@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/login_signup_screen.dart';
+import 'helpers_class/helper_function.dart';
 import 'home/home_screen.dart';
 class LauncherScreen extends StatefulWidget {
   @override
@@ -19,10 +20,15 @@ class _LauncherScreenState extends State<LauncherScreen> {
     await Future.delayed(Duration(seconds: 2)); // Simulate loading time
 
     if (FirebaseAuth.instance.currentUser != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      if(await HelperClass.isAdmin()){
+
+      }
+      else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
     } else {
       Navigator.pushReplacement(
         context,
@@ -35,7 +41,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.blueAccent, Colors.deepPurpleAccent],
             begin: Alignment.topLeft,

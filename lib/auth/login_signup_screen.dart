@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../helpers_class/helper_function.dart';
 import '../home/home_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -29,6 +30,18 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        if (FirebaseAuth.instance.currentUser != null) {
+          if(await HelperClass.isAdmin()){
+
+          }
+          else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          }
+
+
       } else {
         authResult = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
