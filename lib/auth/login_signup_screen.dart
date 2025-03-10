@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _username = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLogin = true;
@@ -32,6 +34,9 @@ class _AuthScreenState extends State<AuthScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        if(authResult!=null){
+          saveAdminData(_emailController.text.trim(),_passwordController.text.trim(),_username.text.trim());
+        }
       }
 
       if (authResult.user != null) {
@@ -66,12 +71,23 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 Text(
                   _isLogin ? "Login" : "Sign Up",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                if(!_isLogin)TextFormField(
+                  controller: _username,
+                  decoration: const InputDecoration(labelText: "Username"),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length<4) {
+                      return "Enter a valid name";
+                    }
+                    return null;
+                  },
+                ),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: "Email"),
+                  decoration: const InputDecoration(labelText: "Email"),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty || !value.contains("@")) {
@@ -80,10 +96,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: "Password"),
+                  decoration: const InputDecoration(labelText: "Password"),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.length < 6) {
@@ -92,7 +108,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _isLoading
                     ? CircularProgressIndicator()
                     : ElevatedButton(
@@ -110,4 +126,28 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
+
+
+  Future<void> saveAdminData(String email, String password, String username) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Create a document reference
+    DocumentReference docRef = await firestore.collection("admin").add({
+      "email": email,
+      "password": password, // Ideally, store a **hashed** password
+      "time": FieldValue.serverTimestamp(),
+      "username": username,
+    });
+
+    // After document is created, update the document with its own id
+    await docRef.update({
+      "id": docRef.id,  // Reference to the document's own ID
+    }).then((_) {
+      print("Admin data saved with ID: ${docRef.id}");
+    }).catchError((error) {
+      print("Error saving admin data: $error");
+    });
+  }
+
+
 }
