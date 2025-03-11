@@ -16,3 +16,4 @@ final getCategoriesProvider = FutureProvider<List<MenuCategory>>((ref) async {
       .map((doc) => MenuCategory.fromJson(doc.data()))
       .toList();
 });
+//
