@@ -5,136 +5,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddCategoryItemScreen extends StatefulWidget {
-  @override
-  _AddCategoryItemScreenState createState() => _AddCategoryItemScreenState();
-}
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class _AddCategoryItemScreenState extends State<AddCategoryItemScreen> {
-  TextEditingController categoryController = TextEditingController();
-  TextEditingController itemNameController = TextEditingController();
-  TextEditingController itemDescController = TextEditingController();
-  TextEditingController itemPriceController = TextEditingController();
+import '../river_pod_class/menu_category_provider.dart';
 
-  String? categoryId;
-  XFile? imageFile;
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Function to pick an image
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      imageFile = pickedFile;
-    });
-  }
-
-  // Function to save Category to Firestore
-  Future<void> _saveCategory() async {
-    if (categoryController.text.isEmpty) return;
-
-    try {
-      DocumentReference categoryRef = await _firestore.collection('categories').add({
-        'name': categoryController.text,
-      });
-
-      setState(() {
-        categoryId = categoryRef.id;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Category Added!")),
-      );
-    } catch (e) {
-      print("Error saving category: $e");
-    }
-  }
-
-  // // Function to save Item to Firestore under a Category
-  // Future<void> _saveItem() async {
-  //   if (categoryId == null ||
-  //       itemNameController.text.isEmpty ||
-  //       itemPriceController.text.isEmpty) return;
-  //
-  //   try {
-  //     String? imageUrl;
-  //     if (imageFile != null) {
-  //       // Upload image to Firebase Storage
-  //       Reference storageRef = FirebaseStorage.instance
-  //           .ref()
-  //           .child('item_images/${imageFile!.name}');
-  //       await storageRef.putFile(imageFile!.path);
-  //       imageUrl = await storageRef.getDownloadURL();
-  //     }
-  //
-  //     // Add item under the category
-  //     await _firestore.collection('categories').doc(categoryId).collection('items').add({
-  //       'name': itemNameController.text,
-  //       'description': itemDescController.text,
-  //       'price': double.parse(itemPriceController.text),
-  //       'imageUrl': imageUrl ?? '',
-  //     });
-  //
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text("Item Added!")),
-  //     );
-  //     itemNameController.clear();
-  //     itemDescController.clear();
-  //     itemPriceController.clear();
-  //     setState(() {
-  //       imageFile = null;
-  //     });
-  //   } catch (e) {
-  //     print("Error saving item: $e");
-  //   }
-  // }
+class MenuCategoryScreen extends ConsumerWidget {
+  const MenuCategoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Category and Item")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: categoryController,
-              decoration: const InputDecoration(labelText: "Category Name"),
-            ),
-            ElevatedButton(
-              onPressed: _saveCategory,
-              child: const Text("Add Category"),
-            ),
-            if (categoryId != null) ...[
-              TextField(
-                controller: itemNameController,
-                decoration: const InputDecoration(labelText: "Item Name"),
-              ),
-              TextField(
-                controller: itemDescController,
-                decoration: const InputDecoration(labelText: "Item Description"),
-              ),
-              TextField(
-                controller: itemPriceController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: "Item Price"),
-              ),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text(imageFile == null ? "Pick Image" : "Change Image"),
-              ),
-              if (imageFile != null) ...[
-                Image.file(File(imageFile!.path)),
-              ],
-              ElevatedButton(
-                onPressed: (){},
-                child: Text("Add Item to Category"),
-              ),
-            ],
-          ],
+      appBar: AppBar(title: const Text('Save Menu Categories')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            final saveCategories = ref.read(saveCategoriesProvider);
+            await saveCategories();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Categories saved to Firebase!')),
+            );
+          },
+          child: const Text('Save Categories to Firebase'),
         ),
       ),
     );
   }
 }
+
