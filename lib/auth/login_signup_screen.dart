@@ -34,7 +34,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if(await HelperClass.isAdmin()){
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MenuCategoryScreen()),
+            MaterialPageRoute(builder: (context) => const CategoriesScreen()),
           );
         }
         else {

@@ -43,6 +43,7 @@ dependencies:
   lucide_icons_flutter: ^1.2.9
   image_picker: ^1.1.2
   flutter_riverpod: ^2.6.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
