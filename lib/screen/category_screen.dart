@@ -25,7 +25,7 @@ class CategoriesScreen extends ConsumerWidget {
           }
 
           return GridView.builder(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -39,7 +39,7 @@ class CategoriesScreen extends ConsumerWidget {
             },
           );
         },
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(child: Text('Error: $error')),
       ),
     );
@@ -74,7 +74,7 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -84,7 +84,7 @@ class CategoryCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
                   category.description,
                   style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -95,7 +95,7 @@ class CategoryCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.timer, size: 16, color: Colors.grey),
+                    const Icon(Icons.timer, size: 16, color: Colors.grey),
                     Text('${category.time} min',
                         style: TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
