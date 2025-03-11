@@ -25,7 +25,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
         //
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const CategoriesScreen()),
+          MaterialPageRoute(builder: (context) =>  CategoriesScreen()),
         );
       }
       else {
