@@ -52,4 +52,19 @@ class RestaurantFood {
       isAvailable: json['isAvailable'],
     );
   }
+
+  factory RestaurantFood.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return RestaurantFood(
+      id: doc.id,
+      name: data['name'] ?? '',
+      description: data['description'] ?? '',
+      image: data['image'] ?? 'https://via.placeholder.com/150',
+      price: (data['price'] ?? 0).toDouble(),
+      categoryId: data['categoryId'] ?? '',
+      categoryName: data['categoryName'] ?? '',
+      preparationTime: data['preparationTime'] ?? 0,
+      isAvailable: data['isAvailable'] ?? false,
+    );
+  }
 }

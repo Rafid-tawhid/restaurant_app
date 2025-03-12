@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/restaurant_food_model.dart';
+
 final foodItemsProvider = StreamProvider.autoDispose((ref) {
-  return FirebaseFirestore.instance.collection('foods').snapshots();
+  return FirebaseFirestore.instance.collection('foods').snapshots().map(
+        (snapshot) => snapshot.docs
+        .map((doc) => RestaurantFood.fromFirestore(doc))
+        .toList(),
+  );
 });
 
 class FoodItemListScreen extends ConsumerWidget {
@@ -14,8 +20,7 @@ class FoodItemListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Food Items")),
       body: foodItemsStream.when(
-        data: (snapshot) {
-          final foodItems = snapshot.docs;
+        data: (foodItems) {
           if (foodItems.isEmpty) {
             return const Center(child: Text("No food items available."));
           }
@@ -23,7 +28,7 @@ class FoodItemListScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(16.0),
             itemCount: foodItems.length,
             itemBuilder: (context, index) {
-              final foodItem = foodItems[index].data();
+              final foodItem = foodItems[index];
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 16.0),
@@ -40,7 +45,7 @@ class FoodItemListScreen extends ConsumerWidget {
                         topRight: Radius.circular(16.0),
                       ),
                       child: Image.network(
-                        foodItem['image'] ?? 'https://via.placeholder.com/150',
+                        foodItem.image,
                         height: 150,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -52,7 +57,7 @@ class FoodItemListScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            foodItem['name'] ?? "Unnamed",
+                            foodItem.name,
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -60,31 +65,31 @@ class FoodItemListScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            foodItem['description'] ?? "No description",
+                            foodItem.description,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 8),
-                          Text("Price: \$${foodItem['price']?.toStringAsFixed(2) ?? "N/A"}"),
+                          Text("Price: \$${foodItem.price.toStringAsFixed(2)}"),
                           const SizedBox(height: 4),
-                          Text("Preparation Time: ${foodItem['preparationTime'] ?? "N/A"} mins"),
+                          Text("Preparation Time: ${foodItem.preparationTime} mins"),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Chip(
                                 label: Text(
-                                  foodItem['isAvailable'] == true ? "Available" : "Not Available",
+                                  foodItem.isAvailable ? "Available" : "Not Available",
                                   style: TextStyle(
-                                    color: foodItem['isAvailable'] == true ? Colors.green : Colors.red,
+                                    color: foodItem.isAvailable ? Colors.green : Colors.red,
                                   ),
                                 ),
-                                backgroundColor: foodItem['isAvailable'] == true
+                                backgroundColor: foodItem.isAvailable
                                     ? Colors.green[50]
                                     : Colors.red[50],
                               ),
                               Text(
-                                foodItem['categoryName'] ?? "Unknown Category",
+                                foodItem.categoryName,
                                 style: const TextStyle(fontStyle: FontStyle.italic),
                               ),
                             ],
