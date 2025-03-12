@@ -50,23 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB_z8ap-_wNXBJj7HLbGZ3Fw3f_kolrsug',
-    appId: '1:265305195498:android:ce3276b884a1b225ad6893',
-    messagingSenderId: '265305195498',
-    projectId: 'tourmate-e22dd',
-    databaseURL: 'https://tourmate-e22dd.firebaseio.com',
-    storageBucket: 'tourmate-e22dd.firebasestorage.app',
+    apiKey: 'AIzaSyDAKSUJ6zux9eXUgnclZnyTvnNKPNb2F2s',
+    appId: '1:317261552742:android:5dd84c5d8bdb96fbe5e1a7',
+    messagingSenderId: '317261552742',
+    projectId: 'restaurant-b8192',
+    storageBucket: 'restaurant-b8192.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAr-S5-NxXZnFKf8SAVOCYtN8OKG_iXMhU',
-    appId: '1:265305195498:ios:ab5e3574c85ae367ad6893',
-    messagingSenderId: '265305195498',
-    projectId: 'tourmate-e22dd',
-    databaseURL: 'https://tourmate-e22dd.firebaseio.com',
-    storageBucket: 'tourmate-e22dd.firebasestorage.app',
-    androidClientId: '265305195498-i3uuj3uuhdg73tp31rqutv4sbfgnr3sj.apps.googleusercontent.com',
-    iosClientId: '265305195498-jj4adeieenncb2ns4lomj97k95nc5dhi.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAvwCXGMPYmQDrlS96UDEOAGqLPYT6u-f0',
+    appId: '1:317261552742:ios:e05fbee42147c7b3e5e1a7',
+    messagingSenderId: '317261552742',
+    projectId: 'restaurant-b8192',
+    storageBucket: 'restaurant-b8192.firebasestorage.app',
     iosBundleId: 'com.flutter.menu',
   );
 }
