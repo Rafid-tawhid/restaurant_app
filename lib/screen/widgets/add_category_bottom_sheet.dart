@@ -39,21 +39,21 @@ class _AddCategoryBottomSheetState extends ConsumerState<AddCategoryBottomSheet>
     });
 
     try {
-      // Upload image to Firebase Storage
-      // String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      // Reference storageRef = FirebaseStorage.instance.ref().child('category_images/$fileName.jpg');
-      // UploadTask uploadTask = storageRef.putFile(_selectedImage!);
-      // TaskSnapshot snapshot = await uploadTask;
-      // String imageUrl = await snapshot.ref.getDownloadURL();
+   //   Upload image to Firebase Storage
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageRef = FirebaseStorage.instance.ref().child('category_images/$fileName.jpg');
+      UploadTask uploadTask = storageRef.putFile(_selectedImage!);
+      TaskSnapshot snapshot = await uploadTask;
+      String imageUrl = await snapshot.ref.getDownloadURL();
 
       // Save category data in Firestore
       await FirebaseFirestore.instance.collection('categories').add({
         'name': _nameController.text.trim(),
         'description': _descriptionController.text.trim(),
-        'image': 'imageUrl',
+        'image': imageUrl,
         'time': 15, // Default preparation time
       }).then((v){
-        debugPrint('SAVED ${v}');
+        debugPrint('SAVED $v');
       });
 
       Navigator.pop(context); // Close the bottom sheet

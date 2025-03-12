@@ -50,19 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDAKSUJ6zux9eXUgnclZnyTvnNKPNb2F2s',
-    appId: '1:317261552742:android:5dd84c5d8bdb96fbe5e1a7',
-    messagingSenderId: '317261552742',
-    projectId: 'restaurant-b8192',
-    storageBucket: 'restaurant-b8192.firebasestorage.app',
+    apiKey: 'AIzaSyBrRcPqgVi6qhL6SJtQvHCFRd6EHCZKv3Y',
+    appId: '1:398749114662:android:4807b0c94db8e0578021e7',
+    messagingSenderId: '398749114662',
+    projectId: 'my-blog-309118',
+    databaseURL: 'https://my-blog-309118-default-rtdb.firebaseio.com',
+    storageBucket: 'my-blog-309118.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAvwCXGMPYmQDrlS96UDEOAGqLPYT6u-f0',
-    appId: '1:317261552742:ios:e05fbee42147c7b3e5e1a7',
-    messagingSenderId: '317261552742',
-    projectId: 'restaurant-b8192',
-    storageBucket: 'restaurant-b8192.firebasestorage.app',
+    apiKey: 'AIzaSyAlPjpBcNS6mpKXmhr1icSAq-wIIPLyIr0',
+    appId: '1:398749114662:ios:b1846562164c9ba18021e7',
+    messagingSenderId: '398749114662',
+    projectId: 'my-blog-309118',
+    databaseURL: 'https://my-blog-309118-default-rtdb.firebaseio.com',
+    storageBucket: 'my-blog-309118.appspot.com',
     iosBundleId: 'com.flutter.menu',
   );
 }

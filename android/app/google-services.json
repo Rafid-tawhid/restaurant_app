@@ -1,13 +1,33 @@
 {
   "project_info": {
-    "project_number": "317261552742",
-    "project_id": "restaurant-b8192",
-    "storage_bucket": "restaurant-b8192.firebasestorage.app"
+    "project_number": "398749114662",
+    "firebase_url": "https://my-blog-309118-default-rtdb.firebaseio.com",
+    "project_id": "my-blog-309118",
+    "storage_bucket": "my-blog-309118.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:317261552742:android:5dd84c5d8bdb96fbe5e1a7",
+        "mobilesdk_app_id": "1:398749114662:android:644a074f7362a8b68021e7",
+        "android_client_info": {
+          "package_name": "com.example.my_messenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrRcPqgVi6qhL6SJtQvHCFRd6EHCZKv3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398749114662:android:4807b0c94db8e0578021e7",
         "android_client_info": {
           "package_name": "com.flutter.menu"
         }
@@ -15,7 +35,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDAKSUJ6zux9eXUgnclZnyTvnNKPNb2F2s"
+          "current_key": "AIzaSyBrRcPqgVi6qhL6SJtQvHCFRd6EHCZKv3Y"
         }
       ],
       "services": {
