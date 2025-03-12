@@ -10,7 +10,7 @@ final menuCategoryServiceProvider = Provider((ref) => FirebaseFirestore.instance
 // Fetch categories from Firestore
 final getCategoriesProvider = FutureProvider<List<MenuCategory>>((ref) async {
   final firestore = ref.read(menuCategoryServiceProvider);
-  final snapshot = await firestore.collection('menuCategories').get();
+  final snapshot = await firestore.collection('menu_categories').get();
 
   return snapshot.docs
       .map((doc) => MenuCategory.fromJson(doc.data()))
