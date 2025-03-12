@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:menu/models/restaurant_food_model.dart';
 
 import '../models/category_model.dart';
 
@@ -25,8 +27,6 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   TextEditingController priceController = TextEditingController();
   TextEditingController preparationTimeController = TextEditingController();
 
-  String? selectedCategoryId;
-  String? selectedCategoryName;
   bool isAvailable = true;
   File? selectedImage;
 
@@ -41,12 +41,32 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     }
   }
 
+  Future<String?> uploadImage(File image) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageRef = FirebaseStorage.instance.ref().child('food_images/$fileName');
+      UploadTask uploadTask = storageRef.putFile(image);
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print("Error uploading image: $e");
+      return null;
+    }
+  }
+
   Future<void> saveFoodItem() async {
-    if (!_formKey.currentState!.validate() || selectedCategoryId == null) {
+    if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill all fields and select a category!")),
       );
       return;
+    }
+    String imageUrl = "https://via.placeholder.com/150";
+    if (selectedImage != null) {
+      String? uploadedImageUrl = await uploadImage(selectedImage!);
+      if (uploadedImageUrl != null) {
+        imageUrl = uploadedImageUrl;
+      }
     }
 
     String docId = FirebaseFirestore.instance.collection('foods').doc().id;
@@ -55,10 +75,10 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       "id": docId,
       "name": nameController.text,
       "description": descriptionController.text,
-      "image": selectedImage != null ? selectedImage!.path : "https://via.placeholder.com/150",
+      "image": imageUrl,
       "price": double.parse(priceController.text),
-      "categoryId": selectedCategoryId,
-      "categoryName": selectedCategoryName,
+      "categoryId": widget.category.id,
+      "categoryName": widget.category.name,
       "preparationTime": int.parse(preparationTimeController.text),
       "isAvailable": isAvailable,
     };
@@ -70,14 +90,12 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     );
 
     // Clear fields after saving
-    nameController.clear();
-    descriptionController.clear();
-    priceController.clear();
-    preparationTimeController.clear();
     setState(() {
+      nameController.clear();
+      descriptionController.clear();
+      priceController.clear();
+      preparationTimeController.clear();
       selectedImage = null;
-      selectedCategoryId = null;
-      selectedCategoryName = null;
       isAvailable = true;
     });
   }
