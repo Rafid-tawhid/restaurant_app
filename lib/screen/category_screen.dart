@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menu/screen/widgets/add_category_bottom_sheet.dart';
 import 'package:menu/screen/widgets/category_card.dart';
 import '../models/category_model.dart';
 import '../river_pod_class/menu_category_provider.dart';
+import 'food_items_screen.dart';
 
 class CategoriesScreen extends ConsumerWidget {
 
@@ -17,6 +19,9 @@ class CategoriesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Menu Categories'),
         backgroundColor: Colors.teal,
+        actions: [
+          IconButton(onPressed: (){Navigator.push(context, CupertinoPageRoute(builder: (context)=>FoodItemListScreen()));}, icon: const Icon(Icons.food_bank_outlined))
+        ],
       ),
       body: categoriesAsync.when(
         data: (categories) {
