@@ -41,13 +41,16 @@ class _AddCategoryBottomSheetState extends ConsumerState<AddCategoryBottomSheet>
     try {
    //   Upload image to Firebase Storage
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
       Reference storageRef = FirebaseStorage.instance.ref().child('category_images/$fileName.jpg');
+      CollectionReference categoriesRef = firestore.collection('menu_categories');
       UploadTask uploadTask = storageRef.putFile(_selectedImage!);
       TaskSnapshot snapshot = await uploadTask;
       String imageUrl = await snapshot.ref.getDownloadURL();
 
       // Save category data in Firestore
-      await FirebaseFirestore.instance.collection('categories').add({
+      await FirebaseFirestore.instance.collection('menu_categories').add({
+        'id':categoriesRef.doc().id,
         'name': _nameController.text.trim(),
         'description': _descriptionController.text.trim(),
         'image': imageUrl,
