@@ -10,7 +10,6 @@ final foodItemsProvider = StreamProvider.autoDispose((ref) {
         .toList(),
   );
 });
-//
 
 class FoodItemListScreen extends ConsumerWidget {
   @override
