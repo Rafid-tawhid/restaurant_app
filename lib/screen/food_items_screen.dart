@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../models/restaurant_food_model.dart';
 
 final foodItemsProvider = StreamProvider.autoDispose((ref) {
@@ -11,6 +10,7 @@ final foodItemsProvider = StreamProvider.autoDispose((ref) {
         .toList(),
   );
 });
+//
 
 class FoodItemListScreen extends ConsumerWidget {
   @override
