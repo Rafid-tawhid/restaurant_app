@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant_food_model.dart';
+import '../river_pod_class/menu_category_provider.dart';
 
 final foodItemsProvider = StreamProvider.autoDispose((ref) {
   return FirebaseFirestore.instance.collection('foods').snapshots().map(
@@ -16,9 +17,48 @@ class FoodItemListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foodItemsStream = ref.watch(foodItemsProvider);
+    final categoriesAsync = ref.read(getCategoriesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Food Items")),
+      appBar: AppBar(title: const Text("Food Items"),actions: [
+        IconButton(
+          onPressed: () {
+            categoriesAsync.when(
+              data: (categories) {
+                showMenu(
+                  context: context,
+                  position: const RelativeRect.fromLTRB(50, 100, 0, 0),
+                  items: categories.map((category) {
+                    return PopupMenuItem(
+                      value: category.id, // Assuming `id` is a field in your category model
+                      child: Text(category.name), // Assuming `name` is a field in your category model
+                    );
+                  }).toList(),
+                ).then((selectedValue) {
+                  if (selectedValue != null) {
+                    // Handle filter logic here
+                    print('Selected filter: $selectedValue');
+                  }
+                });
+              },
+              loading: () {
+                // Show a loading dialog or snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Loading categories...")),
+                );
+              },
+              error: (error, stackTrace) {
+                // Show an error message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error: $error")),
+                );
+              },
+            );
+          },
+          icon: const Icon(Icons.filter_list),
+        ),
+
+      ],),
       body: foodItemsStream.when(
         data: (foodItems) {
           if (foodItems.isEmpty) {
