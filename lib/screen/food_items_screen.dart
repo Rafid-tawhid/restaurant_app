@@ -31,7 +31,10 @@ class FoodItemListScreen extends ConsumerWidget {
                   items: categories.map((category) {
                     return PopupMenuItem(
                       value: category.id, // Assuming `id` is a field in your category model
-                      child: Text(category.name), // Assuming `name` is a field in your category model
+                      child: Text(category.name),
+                      onTap: (){
+
+                      },// Assuming `name` is a field in your category model
                     );
                   }).toList(),
                 ).then((selectedValue) {
