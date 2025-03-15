@@ -14,6 +14,8 @@ final foodItemsProvider = StreamProvider.autoDispose((ref) {
 
 
 class FoodItemListScreen extends ConsumerWidget {
+  const FoodItemListScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foodItemsStream = ref.watch(foodItemsProvider);
