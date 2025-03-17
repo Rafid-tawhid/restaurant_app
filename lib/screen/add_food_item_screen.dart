@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../river_pod_class/menu_category_provider.dart';
+
 class AddFoodScreen extends StatefulWidget {
   final MenuCategory category;
 
@@ -103,7 +105,13 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Food Item")),
+      appBar: AppBar(title: const Text("Add Food Item"),actions: [
+        IconButton(onPressed: ()async{
+
+          final docAsync = ref.watch(documentProvider("your_document_id"));
+
+        }, icon: const Icon(Icons.edit))
+      ],),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

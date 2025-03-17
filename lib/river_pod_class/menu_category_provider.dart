@@ -19,3 +19,19 @@ final getCategoriesProvider = FutureProvider<List<MenuCategory>>((ref) async {
 //
 
 
+// Firestore instance provider
+final firestoreProvider = Provider<FirebaseFirestore>((ref) {
+  return FirebaseFirestore.instance;
+});
+
+// Function to get a document by its ID
+final documentProvider = FutureProvider.family<DocumentSnapshot?, String>((ref, docId) async {
+  final firestore = ref.watch(firestoreProvider);
+  try {
+    final doc = await firestore.collection('menu_categories').doc(docId).get();
+    return doc.exists ? doc : null;
+  } catch (e) {
+    throw Exception("Error fetching document: $e");
+  }
+});
+
