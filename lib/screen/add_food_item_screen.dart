@@ -217,9 +217,12 @@ class EditButton extends ConsumerWidget {
     final docId = category.id; // Change this to your actual document ID
     final documentState = ref.watch(documentProvider(docId));
     return IconButton(onPressed: () async {
-      ref.refresh(documentProvider(docId));
-
-      debugPrint('documentState ${documentState.asData}');
+      final docSnapshot = await ref.read(documentProvider(docId).future);
+      if (docSnapshot != null) {
+        print("🔥 Document Data: ${docSnapshot.data()}");
+      } else {
+        print("❌ Document not found!");
+      }
 
     }, icon: const Icon(Icons.edit));
   }
