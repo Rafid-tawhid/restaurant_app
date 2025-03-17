@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/category_model.dart';
 import '../service_class/menu_category_service.dart';
@@ -29,6 +30,7 @@ final documentProvider = FutureProvider.family<DocumentSnapshot?, String>((ref, 
   final firestore = ref.watch(firestoreProvider);
   try {
     final doc = await firestore.collection('menu_categories').doc(docId).get();
+    debugPrint('documentState doc${doc.data()}');
     return doc.exists ? doc : null;
   } catch (e) {
     throw Exception("Error fetching document: $e");

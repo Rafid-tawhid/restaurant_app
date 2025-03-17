@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menu/models/restaurant_food_model.dart';
 
 import '../models/category_model.dart';
@@ -46,7 +47,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   Future<String?> uploadImage(File image) async {
     try {
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageRef = FirebaseStorage.instance.ref().child('food_images/$fileName');
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child('food_images/$fileName');
       UploadTask uploadTask = storageRef.putFile(image);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
@@ -59,7 +61,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   Future<void> saveFoodItem() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill all fields and select a category!")),
+        const SnackBar(
+            content: Text("Please fill all fields and select a category!")),
       );
       return;
     }
@@ -85,7 +88,10 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       "isAvailable": isAvailable,
     };
 
-    await FirebaseFirestore.instance.collection('foods').doc(docId).set(foodData);
+    await FirebaseFirestore.instance
+        .collection('foods')
+        .doc(docId)
+        .set(foodData);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Food item added successfully!")),
@@ -105,13 +111,12 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Food Item"),actions: [
-        IconButton(onPressed: ()async{
-
-          final docAsync = ref.watch(documentProvider("your_document_id"));
-
-        }, icon: const Icon(Icons.edit))
-      ],),
+      appBar: AppBar(
+        title: const Text("Add Food Item"),
+        actions: [
+          EditButton(category:widget.category)
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -120,19 +125,29 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16,),
-                Text('Add a food item in ${widget.category.name} category',style: const TextStyle(fontSize: 16,color: Colors.teal,fontWeight: FontWeight.bold),),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  'Add a food item in ${widget.category.name} category',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.teal,
+                      fontWeight: FontWeight.bold),
+                ),
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(labelText: "Food Name"),
-                  validator: (value) => value!.isEmpty ? "Enter food name" : null,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter food name" : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: descriptionController,
                   decoration: const InputDecoration(labelText: "Description"),
                   maxLines: 5,
-                  validator: (value) => value!.isEmpty ? "Enter description" : null,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter description" : null,
                 ),
                 const SizedBox(height: 16),
                 GestureDetector(
@@ -159,9 +174,11 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: preparationTimeController,
-                  decoration: const InputDecoration(labelText: "Preparation Time (min)"),
+                  decoration: const InputDecoration(
+                      labelText: "Preparation Time (min)"),
                   keyboardType: TextInputType.number,
-                  validator: (value) => value!.isEmpty ? "Enter preparation time" : null,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter preparation time" : null,
                 ),
                 const SizedBox(height: 16),
                 SwitchListTile(
@@ -189,3 +206,21 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   }
 }
 
+class EditButton extends ConsumerWidget {
+
+  final MenuCategory category;
+
+  EditButton({super.key, required this.category});
+
+  @override
+  Widget build(BuildContext context,WidgetRef ref) {
+    final docId = category.id; // Change this to your actual document ID
+    final documentState = ref.watch(documentProvider(docId));
+    return IconButton(onPressed: () async {
+      ref.refresh(documentProvider(docId));
+
+      debugPrint('documentState ${documentState.asData}');
+
+    }, icon: const Icon(Icons.edit));
+  }
+}
