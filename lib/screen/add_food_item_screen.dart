@@ -114,7 +114,11 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
       appBar: AppBar(
         title: const Text("Add Food Item"),
         actions: [
-          EditButton(category:widget.category)
+          IconButton(
+              onPressed: () async {
+
+              },
+              icon: const Icon(Icons.edit))
         ],
       ),
       body: SingleChildScrollView(
@@ -203,27 +207,5 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         ),
       ),
     );
-  }
-}
-
-class EditButton extends ConsumerWidget {
-
-  final MenuCategory category;
-
-  EditButton({super.key, required this.category});
-
-  @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    final docId = category.id; // Change this to your actual document ID
-    final documentState = ref.watch(documentProvider(docId));
-    return IconButton(onPressed: () async {
-      final docSnapshot = await ref.read(documentProvider(docId).future);
-      if (docSnapshot != null) {
-        print("🔥 Document Data: ${docSnapshot.data()}");
-      } else {
-        print("❌ Document not found!");
-      }
-
-    }, icon: const Icon(Icons.edit));
   }
 }

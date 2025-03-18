@@ -17,23 +17,31 @@ final getCategoriesProvider = FutureProvider<List<MenuCategory>>((ref) async {
       .map((doc) => MenuCategory.fromJson(doc.data()))
       .toList();
 });
-//
 
+// Firestore instance
+final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
 
-// Firestore instance provider
-final firestoreProvider = Provider<FirebaseFirestore>((ref) {
-  return FirebaseFirestore.instance;
-});
+// StateProvider to store the selected document ID
+final documentIdProvider = StateProvider<String?>((ref) => null);
 
-// Function to get a document by its ID
-final documentProvider = FutureProvider.family<DocumentSnapshot?, String>((ref, docId) async {
+// FutureProvider to fetch document from Firestore by ID
+final documentProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
   final firestore = ref.watch(firestoreProvider);
+  final docId = ref.watch(documentIdProvider); // Get the document ID from state
+
+  if (docId == null || docId.isEmpty) {
+    return null; // Return null if no document ID is provided
+  }
+
   try {
-    final doc = await firestore.collection('menu_categories').doc(docId).get();
-    debugPrint('documentState doc${doc.data()}');
-    return doc.exists ? doc : null;
+    final docSnapshot = await firestore.collection('your_collection').doc(docId).get();
+
+    if (docSnapshot.exists) {
+      return docSnapshot.data(); // Return document data
+    } else {
+      return null; // Document does not exist
+    }
   } catch (e) {
-    throw Exception("Error fetching document: $e");
+    throw Exception('Error fetching document: $e');
   }
 });
-
