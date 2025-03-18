@@ -15,9 +15,8 @@ import '../river_pod_class/menu_category_provider.dart';
 
 class AddFoodScreen extends ConsumerStatefulWidget {
   final MenuCategory category;
-  final String? foodId; // This will be used for editing
 
-  AddFoodScreen({required this.category, this.foodId});
+  AddFoodScreen({required this.category});
 
   @override
   _AddFoodScreenState createState() => _AddFoodScreenState();
@@ -37,20 +36,18 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.foodId != null) {
-      _fetchFoodData();
-    }
+
   }
 
   void _fetchFoodData() {
-    ref.read(foodProvider(widget.foodId!).future).then((data) {
+    ref.read(categoryProvider(widget.category.id).future).then((data) {
       if (data != null) {
         setState(() {
           nameController.text = data["name"] ?? "";
           descriptionController.text = data["description"] ?? "";
           priceController.text = data["price"].toString();
-          preparationTimeController.text = data["preparationTime"].toString();
-          isAvailable = data["isAvailable"] ?? true;
+          preparationTimeController.text = data["time"].toString();
+         // isAvailable = data["isAvailable"] ?? true;
         });
       }
     });
@@ -58,24 +55,48 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final foodData = widget.foodId != null ? ref.watch(foodProvider(widget.foodId!)) : null;
-
+   // final foodData = widget.foodId != null ? ref.watch(foodProvider(widget.foodId!)) : null;
+    final foodList = ref.watch(foodProvider(widget.category.id));
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Add Food Item"),
-        actions: [
-          if (widget.foodId != null) // Show edit button only if editing
-            IconButton(
-              onPressed: () => _fetchFoodData(),
-              icon: const Icon(Icons.edit),
-            ),
-        ],
-      ),
-      body: foodData?.when(
-        data: (data) => _buildForm(),
+      appBar: AppBar(title: const Text("Food List")),
+      body: foodList.when(
+        data: (foods) =>foods.isEmpty?const Center(child: Text('No Food Found'),): ListView.builder(
+          itemCount: foods.length,
+          itemBuilder: (context, index) {
+            final food = foods[index];
+            return Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    food.image,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                title: Text(
+                  food.name,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
+                subtitle: Text(
+                  "\$${food.price}",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.green),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
+                onTap: () {
+                  // Add navigation or actions here
+                },
+              ),
+            );
+          },
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text("Error loading food item")),
-      ) ?? _buildForm(),
+        error: (err, _) => Center(child: Text("Error: $err")),
+      ),
     );
   }
 

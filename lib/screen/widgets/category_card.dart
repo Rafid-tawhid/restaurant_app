@@ -15,7 +15,7 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context)=>AddFoodScreen(category: category,foodId: category.id,)));
+        Navigator.push(context, CupertinoPageRoute(builder: (context)=>AddFoodScreen(category: category)));
       },
       child: Card(
         elevation: 4,
@@ -50,7 +50,7 @@ class CategoryCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     category.description,
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
