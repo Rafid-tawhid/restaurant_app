@@ -18,30 +18,7 @@ final getCategoriesProvider = FutureProvider<List<MenuCategory>>((ref) async {
       .toList();
 });
 
-// Firestore instance
-final firestoreProvider = Provider((ref) => FirebaseFirestore.instance);
-
-// StateProvider to store the selected document ID
-final documentIdProvider = StateProvider<String?>((ref) => null);
-
-// FutureProvider to fetch document from Firestore by ID
-final documentProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
-  final firestore = ref.watch(firestoreProvider);
-  final docId = ref.watch(documentIdProvider); // Get the document ID from state
-
-  if (docId == null || docId.isEmpty) {
-    return null; // Return null if no document ID is provided
-  }
-
-  try {
-    final docSnapshot = await firestore.collection('your_collection').doc(docId).get();
-
-    if (docSnapshot.exists) {
-      return docSnapshot.data(); // Return document data
-    } else {
-      return null; // Document does not exist
-    }
-  } catch (e) {
-    throw Exception('Error fetching document: $e');
-  }
+final foodProvider = FutureProvider.family<Map<String, dynamic>?, String>((ref, foodId) async {
+  final doc = await FirebaseFirestore.instance.collection('menu_categories').doc(foodId).get();
+  return doc.exists ? doc.data() : null;
 });

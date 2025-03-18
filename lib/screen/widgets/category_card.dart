@@ -15,7 +15,7 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, CupertinoPageRoute(builder: (context)=>AddFoodScreen(category: category,)));
+        Navigator.push(context, CupertinoPageRoute(builder: (context)=>AddFoodScreen(category: category,foodId: category.id,)));
       },
       child: Card(
         elevation: 4,

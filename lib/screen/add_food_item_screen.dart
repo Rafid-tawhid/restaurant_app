@@ -13,16 +13,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../river_pod_class/menu_category_provider.dart';
 
-class AddFoodScreen extends StatefulWidget {
+class AddFoodScreen extends ConsumerStatefulWidget {
   final MenuCategory category;
+  final String? foodId; // This will be used for editing
 
-  AddFoodScreen({required this.category});
+  AddFoodScreen({required this.category, this.foodId});
 
   @override
   _AddFoodScreenState createState() => _AddFoodScreenState();
 }
 
-class _AddFoodScreenState extends State<AddFoodScreen> {
+class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
@@ -33,179 +34,94 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   bool isAvailable = true;
   File? selectedImage;
 
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        selectedImage = File(pickedFile.path);
-      });
+  @override
+  void initState() {
+    super.initState();
+    if (widget.foodId != null) {
+      _fetchFoodData();
     }
   }
 
-  Future<String?> uploadImage(File image) async {
-    try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageRef =
-          FirebaseStorage.instance.ref().child('food_images/$fileName');
-      UploadTask uploadTask = storageRef.putFile(image);
-      TaskSnapshot snapshot = await uploadTask;
-      return await snapshot.ref.getDownloadURL();
-    } catch (e) {
-      print("Error uploading image: $e");
-      return null;
-    }
-  }
-
-  Future<void> saveFoodItem() async {
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Please fill all fields and select a category!")),
-      );
-      return;
-    }
-    String imageUrl = "https://via.placeholder.com/150";
-    if (selectedImage != null) {
-      String? uploadedImageUrl = await uploadImage(selectedImage!);
-      if (uploadedImageUrl != null) {
-        imageUrl = uploadedImageUrl;
+  void _fetchFoodData() {
+    ref.read(foodProvider(widget.foodId!).future).then((data) {
+      if (data != null) {
+        setState(() {
+          nameController.text = data["name"] ?? "";
+          descriptionController.text = data["description"] ?? "";
+          priceController.text = data["price"].toString();
+          preparationTimeController.text = data["preparationTime"].toString();
+          isAvailable = data["isAvailable"] ?? true;
+        });
       }
-    }
-
-    String docId = FirebaseFirestore.instance.collection('foods').doc().id;
-
-    Map<String, dynamic> foodData = {
-      "id": docId,
-      "name": nameController.text,
-      "description": descriptionController.text,
-      "image": imageUrl,
-      "price": double.parse(priceController.text),
-      "categoryId": widget.category.id,
-      "categoryName": widget.category.name,
-      "preparationTime": int.parse(preparationTimeController.text),
-      "isAvailable": isAvailable,
-    };
-
-    await FirebaseFirestore.instance
-        .collection('foods')
-        .doc(docId)
-        .set(foodData);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Food item added successfully!")),
-    );
-
-    // Clear fields after saving
-    setState(() {
-      nameController.clear();
-      descriptionController.clear();
-      priceController.clear();
-      preparationTimeController.clear();
-      selectedImage = null;
-      isAvailable = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final foodData = widget.foodId != null ? ref.watch(foodProvider(widget.foodId!)) : null;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Food Item"),
         actions: [
-          IconButton(
-              onPressed: () async {
-
-              },
-              icon: const Icon(Icons.edit))
+          if (widget.foodId != null) // Show edit button only if editing
+            IconButton(
+              onPressed: () => _fetchFoodData(),
+              icon: const Icon(Icons.edit),
+            ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 16,
-                ),
-                Text(
-                  'Add a food item in ${widget.category.name} category',
-                  style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.teal,
-                      fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: "Food Name"),
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter food name" : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: "Description"),
-                  maxLines: 5,
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter description" : null,
-                ),
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: pickImage,
-                  child: Container(
-                    height: 150,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: selectedImage != null
-                        ? Image.file(selectedImage!, fit: BoxFit.cover)
-                        : const Center(child: Text("Tap to pick an image")),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: priceController,
-                  decoration: const InputDecoration(labelText: "Price"),
-                  keyboardType: TextInputType.number,
-                  validator: (value) => value!.isEmpty ? "Enter price" : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: preparationTimeController,
-                  decoration: const InputDecoration(
-                      labelText: "Preparation Time (min)"),
-                  keyboardType: TextInputType.number,
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter preparation time" : null,
-                ),
-                const SizedBox(height: 16),
-                SwitchListTile(
-                  title: const Text("Available"),
-                  value: isAvailable,
-                  onChanged: (value) {
-                    setState(() {
-                      isAvailable = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: saveFoodItem,
-                    child: const Text("Save Food Item"),
-                  ),
-                ),
-              ],
+      body: foodData?.when(
+        data: (data) => _buildForm(),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text("Error loading food item")),
+      ) ?? _buildForm(),
+    );
+  }
+
+  Widget _buildForm() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: "Food Name"),
+              validator: (value) => value!.isEmpty ? "Enter food name" : null,
             ),
-          ),
+            TextFormField(
+              controller: descriptionController,
+              decoration: const InputDecoration(labelText: "Description"),
+              maxLines: 3,
+              validator: (value) => value!.isEmpty ? "Enter description" : null,
+            ),
+            TextFormField(
+              controller: priceController,
+              decoration: const InputDecoration(labelText: "Price"),
+              keyboardType: TextInputType.number,
+              validator: (value) => value!.isEmpty ? "Enter price" : null,
+            ),
+            TextFormField(
+              controller: preparationTimeController,
+              decoration: const InputDecoration(labelText: "Preparation Time (min)"),
+              keyboardType: TextInputType.number,
+              validator: (value) => value!.isEmpty ? "Enter preparation time" : null,
+            ),
+            SwitchListTile(
+              title: const Text("Available"),
+              value: isAvailable,
+              onChanged: (value) => setState(() => isAvailable = value),
+            ),
+            ElevatedButton(
+              onPressed: () {}, // Implement save logic
+              child: const Text("Save Food Item"),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
