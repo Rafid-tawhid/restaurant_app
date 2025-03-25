@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 final imagePickerProvider = Provider((ref) => ImagePicker());
 //
+//
 class AddCategoryBottomSheet extends ConsumerStatefulWidget {
   @override
   _AddCategoryBottomSheetState createState() => _AddCategoryBottomSheetState();
